@@ -27,7 +27,9 @@ public class APIs {
             User user = new Gson().fromJson(request.body(), User.class);
             userService.addUser(user);
             
-        	String url = "jdbc:mysql://localhost:3306/demo";
+            System.out.println("executed");
+            
+        	String url = "jdbc:mysql://localhost:3306/users";
         	String databaseUser = "student";
         	String password = "student";
         	
@@ -42,12 +44,12 @@ public class APIs {
                  myStmt = myConn.createStatement();
       
                  // 3. Execute SQL query
-                 String sql = "insert into employees " + " (last_name, first_name, email)"
-                         + " values ('testing3', 'testing3', 'testing3@ada.com')";
+                 String sql = "insert into users " + " (last_name, first_name, email)"
+                         + " values ('" + user.getLastName() + "','" + user.getFirstName() + "','" + user.getEmail() + "')";
 
                  myStmt.executeUpdate(sql);
       
-                 System.out.println("Insert complete.");
+//                 System.out.println("Insert complete.");
 //             } catch (Exception exc) {
 //                 exc.printStackTrace();
 //             } finally {
