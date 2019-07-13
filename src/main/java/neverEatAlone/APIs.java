@@ -6,10 +6,19 @@ import static spark.Spark.options;
 import static spark.Spark.post;
 import static spark.Spark.put;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import com.google.gson.Gson;
 
-public class SparkRestExample {
-    public static void main(String[] args) {
+public class APIs {
+    public static void main(String[] args) throws SQLException {
+    	
+
+         
+    	
         final UserService userService = new UserServiceMapImpl();
 
         post("/users", (request, response) -> {
@@ -17,8 +26,43 @@ public class SparkRestExample {
 
             User user = new Gson().fromJson(request.body(), User.class);
             userService.addUser(user);
+            
+        	String url = "jdbc:mysql://localhost:3306/demo";
+        	String databaseUser = "student";
+        	String password = "student";
+        	
+        	 Connection myConn = null;
+             Statement myStmt = null;
+      
+//             try {
+                 // 1. Get a connection to database
+                 myConn = DriverManager.getConnection(url, databaseUser, password);
+      
+                 // 2. Create a statement
+                 myStmt = myConn.createStatement();
+      
+                 // 3. Execute SQL query
+                 String sql = "insert into employees " + " (last_name, first_name, email)"
+                         + " values ('testing3', 'testing3', 'testing3@ada.com')";
+
+                 myStmt.executeUpdate(sql);
+      
+                 System.out.println("Insert complete.");
+//             } catch (Exception exc) {
+//                 exc.printStackTrace();
+//             } finally {
+//                 if (myStmt != null) {
+//                     myStmt.close();
+//                 }
+//      
+//                 if (myConn != null) {
+//                     myConn.close();
+//                 }
+//             }
+            
 
             return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+            
         });
 
         get("/users", (request, response) -> {
