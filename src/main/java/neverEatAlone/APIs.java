@@ -90,32 +90,11 @@ public class APIs {
 				String firstName = myRs.getString("first_name");
 				String email = myRs.getString("email");
 				
-//				System.out.printf("%s, %s", lastName, firstName);
 				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, firstName, lastName, email))));
 			}
 			
 			return user;
 			
-			
-			
-//			String id = request.params(":id");
-//			String lastName = myRs.getString("last_name");
-//			String firstName = myRs.getString("first_name");
-//			String email = myRs.getString("email");
-			
-//			System.out.printf("%s, %s", lastName, firstName);
-//			
-//			System.out.println(firstName);
-			
-			// 5. Display the result set
-//			display(myRs);
-			
-//			user = new User("1", "Adelyn", "Cheng", "adelyn@ada.com");
-			
-//            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, firstName, lastName, email))));
-			
-
-//            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(userService.getUser(request.params(":id")))));
         });
 
         put("/users/:id", (request, response) -> {
@@ -145,14 +124,6 @@ public class APIs {
         });
 
     }
-    
-//    private static void display(ResultSet myRs) throws SQLException {
-//		while (myRs.next()) {
-//			String lastName = myRs.getString("last_name");
-//			String firstName = myRs.getString("first_name");
-//			
-//			System.out.printf("%s, %s", lastName, firstName);
-//		}
-//	}
+
 
 }
