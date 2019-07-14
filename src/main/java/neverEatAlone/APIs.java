@@ -146,13 +146,13 @@ public class APIs {
 
     }
     
-    private static void display(ResultSet myRs) throws SQLException {
-		while (myRs.next()) {
-			String lastName = myRs.getString("last_name");
-			String firstName = myRs.getString("first_name");
-			
-			System.out.printf("%s, %s", lastName, firstName);
-		}
-	}
+//    private static void display(ResultSet myRs) throws SQLException {
+//		while (myRs.next()) {
+//			String lastName = myRs.getString("last_name");
+//			String firstName = myRs.getString("first_name");
+//			
+//			System.out.printf("%s, %s", lastName, firstName);
+//		}
+//	}
 
 }
