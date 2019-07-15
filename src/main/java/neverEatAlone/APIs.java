@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.io.FileReader;
 import java.sql.*;
 
 import com.google.gson.Gson;
@@ -58,32 +59,42 @@ public class APIs {
 
             JsonParser parser = new JsonParser();
             JsonObject interested = parser.parse(request.body()).getAsJsonObject();
-            String id = interested.get("id").getAsString();
+//            String id = interested.get("id").getAsString();
             String userId = interested.get("userId").getAsString();
             String restId = interested.get("restId").getAsString();
             
-            System.out.println(interested);
             
-        	String url = "jdbc:mysql://localhost:3306/users";
-        	String databaseUser = "student";
-        	String password = "student";
-        	
-        	 Connection myConn = null;
-             Statement myStmt = null;
-      
-                 // 1. Get a connection to database
-                 myConn = DriverManager.getConnection(url, databaseUser, password);
-      
-                 // 2. Create a statement
-                 myStmt = myConn.createStatement();
-      
-                 // 3. Execute SQL query
-                 String sql = "insert into interests " + " (id, user_id, rest_id)"
-                		 + " values ('" + id + "','" + userId + "','" + restId + "')";
-
-                 myStmt.executeUpdate(sql);
-      
-                 System.out.println("Insert complete.");
+//        	String url = "jdbc:mysql://localhost:3306/users";
+//        	String databaseUser = "student";
+//        	String password = "student";
+            
+            JsonObject aws = parser.parse(new FileReader("secrets.txt")).getAsJsonObject();
+            String userName = aws.get("aws_userName").getAsString();
+            String password = aws.get("aws_password").getAsString();
+            
+            System.out.println(userName);
+            System.out.println(password);
+            
+//            String url = "jdbc:mysql://nevereatalonedata.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAloneData";
+//        	String databaseUser = userName;
+//        	String databasePassword = password;
+//        	
+//        	 Connection myConn = null;
+//             Statement myStmt = null;
+//      
+//                 // 1. Get a connection to database
+//                 myConn = DriverManager.getConnection(url, databaseUser, databasePassword);
+//      
+//                 // 2. Create a statement
+//                 myStmt = myConn.createStatement();
+//      
+//                 // 3. Execute SQL query
+//                 String sql = "insert into interests " + "(user_id, rest_id)"
+//                		 + " values ('" + userId + "','" + restId + "')";
+//
+//                 myStmt.executeUpdate(sql);
+//      
+//                 System.out.println("Insert complete.");
 
 
             return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
