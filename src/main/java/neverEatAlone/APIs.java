@@ -13,12 +13,11 @@ import java.sql.Statement;
 import java.sql.*;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class APIs {
     public static void main(String[] args) throws SQLException {
-    	
-    	
-         
     	
         final UserService userService = new UserServiceMapImpl();
 
@@ -44,6 +43,43 @@ public class APIs {
                  // 3. Execute SQL query
                  String sql = "insert into users " + " (last_name, first_name, email)"
                 		 + " values ('" + user.getLastName() + "','" + user.getFirstName() + "','" + user.getEmail() + "')";
+
+                 myStmt.executeUpdate(sql);
+      
+                 System.out.println("Insert complete.");
+
+
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+            
+        });
+        
+        post("/interests", (request, response) -> {
+            response.type("application/json");
+
+            JsonParser parser = new JsonParser();
+            JsonObject interested = parser.parse(request.body()).getAsJsonObject();
+            String id = interested.get("id").getAsString();
+            String userId = interested.get("userId").getAsString();
+            String restId = interested.get("restId").getAsString();
+            
+            System.out.println(interested);
+            
+        	String url = "jdbc:mysql://localhost:3306/users";
+        	String databaseUser = "student";
+        	String password = "student";
+        	
+        	 Connection myConn = null;
+             Statement myStmt = null;
+      
+                 // 1. Get a connection to database
+                 myConn = DriverManager.getConnection(url, databaseUser, password);
+      
+                 // 2. Create a statement
+                 myStmt = myConn.createStatement();
+      
+                 // 3. Execute SQL query
+                 String sql = "insert into interests " + " (id, user_id, rest_id)"
+                		 + " values ('" + id + "','" + userId + "','" + restId + "')";
 
                  myStmt.executeUpdate(sql);
       
@@ -79,6 +115,42 @@ public class APIs {
 			// 3. Set the parameters
 //			preparedStmt.setDouble(1, Integer.parseInt(request.params(":id")));
 			preparedStmt.setString(1, request.params(":id"));
+			
+			// 4. Execute SQL query
+			myRs = preparedStmt.executeQuery();
+			String user = null;
+			
+			while (myRs.next()) {
+				String id = myRs.getString("id");
+				String lastName = myRs.getString("last_name");
+				String firstName = myRs.getString("first_name");
+				String email = myRs.getString("email");
+				
+				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, firstName, lastName, email))));
+			}
+			
+			return user;
+			
+        });
+        
+        get("/users/email/:email", (request, response) -> {
+            response.type("application/json");
+            
+            String url = "jdbc:mysql://localhost:3306/users";
+        	String databaseUser = "student";
+        	String password = "student";
+        	
+    		 Connection myConn = null;
+    		 PreparedStatement preparedStmt = null;
+     		ResultSet myRs = null;
+            
+            myConn = DriverManager.getConnection(url, databaseUser , password);
+			
+			// 2. Prepare statement
+			preparedStmt = myConn.prepareStatement("select * from users where email = ?");
+			
+			// 3. Set the parameters
+			preparedStmt.setString(1, request.params(":email"));
 			
 			// 4. Execute SQL query
 			myRs = preparedStmt.executeQuery();
