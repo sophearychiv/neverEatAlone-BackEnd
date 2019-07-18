@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.io.FileReader;
 import java.sql.*;
 
@@ -28,22 +30,35 @@ public class APIs {
             User user = new Gson().fromJson(request.body(), User.class);
             userService.addUser(user);
             
-        	String url = "jdbc:mysql://localhost:3306/users";
-        	String databaseUser = "student";
-        	String password = "student";
+            JsonParser parser = new JsonParser();
+            JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+            String userName = aws.get("aws_userName").getAsString();
+            String password = aws.get("aws_password").getAsString();
+            
+            String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+        	String databaseUser = userName;
+        	String databasePassword = password;
         	
         	 Connection myConn = null;
              Statement myStmt = null;
       
                  // 1. Get a connection to database
-                 myConn = DriverManager.getConnection(url, databaseUser, password);
+                 myConn = DriverManager.getConnection(url, databaseUser, databasePassword);
       
                  // 2. Create a statement
                  myStmt = myConn.createStatement();
+                 
+                 JsonObject newUser = parser.parse(request.body()).getAsJsonObject();
+                 String fbId = newUser.get("fbId").getAsString();
+                 String firstName = newUser.get("firstName").getAsString();
+                 String lastName = newUser.get("lastName").getAsString();
+                 String email = newUser.get("email").getAsString();
+                 String photoUrl = newUser.get("photoUrl").getAsString();
       
                  // 3. Execute SQL query
-                 String sql = "insert into users " + " (last_name, first_name, email)"
-                		 + " values ('" + user.getLastName() + "','" + user.getFirstName() + "','" + user.getEmail() + "')";
+                 String sql = "insert into users " + " (fb_id, first_name, last_name, email, photo_url)"
+                		 + " values ('" + fbId + "','" + firstName + "','" + lastName + "','" + email + "','" + photoUrl + "')";
+//                		 + " values ('" + user.getFbId() + "','" + user.getFirstName() + "','" + user.getLastName() + "','" + user.getEmail() + "','" + user.getPhotoUrl() + "')";
 
                  myStmt.executeUpdate(sql);
       
@@ -59,15 +74,15 @@ public class APIs {
 
             JsonParser parser = new JsonParser();
             JsonObject interested = parser.parse(request.body()).getAsJsonObject();
-            String userId = interested.get("userId").getAsString();
-            String restId = interested.get("restId").getAsString();
+            String userFbId = interested.get("userFbId").getAsString();
+            String restYelpId = interested.get("restYelpId").getAsString();
 
             
             JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
             String userName = aws.get("aws_userName").getAsString();
             String password = aws.get("aws_password").getAsString();
             
-            String url = "jdbc:mysql://nevereatalonedata.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAloneData";
+            String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
         	String databaseUser = userName;
         	String databasePassword = password;
         	
@@ -81,8 +96,8 @@ public class APIs {
                  myStmt = myConn.createStatement();
       
                  // 3. Execute SQL query
-                 String sql = "insert into interests " + "(user_id, rest_id)"
-                		 + " values ('" + userId + "','" + restId + "')";
+                 String sql = "insert into interests " + "(user_fb_id, rest_yelp_id)"
+                		 + " values ('" + userFbId + "','" + restYelpId + "')";
 
                  myStmt.executeUpdate(sql);
       
@@ -99,78 +114,167 @@ public class APIs {
             return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(userService.getUsers())));
         });
 
-        get("/users/:id", (request, response) -> {
+        get("/users/:fbId", (request, response) -> {
             response.type("application/json");
             
-            String url = "jdbc:mysql://localhost:3306/users";
-        	String databaseUser = "student";
-        	String password = "student";
-        	
-    		 Connection myConn = null;
-    		 PreparedStatement preparedStmt = null;
-     		ResultSet myRs = null;
+            JsonParser parser = new JsonParser();
+//            JsonObject interested = parser.parse(request.body()).getAsJsonObject();
+//            String userId = interested.get("userId").getAsString();
+//            String restId = interested.get("restId").getAsString();
+
             
-            myConn = DriverManager.getConnection(url, databaseUser , password);
+            JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+            String userName = aws.get("aws_userName").getAsString();
+            String password = aws.get("aws_password").getAsString();
+            
+            String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+        	String databaseUser = userName;
+        	String databasePassword = password;
+        	
+    		Connection myConn = null;
+    		PreparedStatement preparedStmt = null;
+     		ResultSet myRs = null;
+     		String user = null;
+            
+            myConn = DriverManager.getConnection(url, databaseUser , databasePassword);
 			
 			// 2. Prepare statement
-			preparedStmt = myConn.prepareStatement("select * from users where id = ?");
+			preparedStmt = myConn.prepareStatement("select * from neverEatAlone.users where fb_id = ?");
 			
 			// 3. Set the parameters
 //			preparedStmt.setDouble(1, Integer.parseInt(request.params(":id")));
-			preparedStmt.setString(1, request.params(":id"));
+			preparedStmt.setString(1, request.params(":fbId"));
+			
+			System.out.println("user fbId in get user request is " + request.params(":fbId"));
 			
 			// 4. Execute SQL query
 			myRs = preparedStmt.executeQuery();
-			String user = null;
+			
+			System.out.println(myRs);
+			
+			
 			
 			while (myRs.next()) {
 				String id = myRs.getString("id");
+				String fbId = myRs.getString("fb_id");
 				String lastName = myRs.getString("last_name");
 				String firstName = myRs.getString("first_name");
 				String email = myRs.getString("email");
+				String photoUrl = myRs.getString("photo_url");
 				
-				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, firstName, lastName, email))));
+				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, 
+						new Gson().toJsonTree(new User(id, fbId, firstName, lastName, email, photoUrl))));
 			}
+			
+			System.out.println("returned user from get request: " + user);
+			
+//			System.out.println(myRs.next());
 			
 			return user;
 			
         });
         
-        get("/users/email/:email", (request, response) -> {
-            response.type("application/json");
-            
-            String url = "jdbc:mysql://localhost:3306/users";
-        	String databaseUser = "student";
-        	String password = "student";
+        get("/users/:fbId/interests/:restYelpId", (request, response) -> {
         	
-    		 Connection myConn = null;
-    		 PreparedStatement preparedStmt = null;
-     		ResultSet myRs = null;
-            
-            myConn = DriverManager.getConnection(url, databaseUser , password);
-			
-			// 2. Prepare statement
-			preparedStmt = myConn.prepareStatement("select * from users where email = ?");
-			
-			// 3. Set the parameters
-			preparedStmt.setString(1, request.params(":email"));
-			
-			// 4. Execute SQL query
-			myRs = preparedStmt.executeQuery();
-			String user = null;
-			
-			while (myRs.next()) {
-				String id = myRs.getString("id");
-				String lastName = myRs.getString("last_name");
-				String firstName = myRs.getString("first_name");
-				String email = myRs.getString("email");
-				
-				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, firstName, lastName, email))));
-			}
-			
-			return user;
-			
+    	   response.type("application/json");
+           
+           JsonParser parser = new JsonParser();
+
+               
+           JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+           String userName = aws.get("aws_userName").getAsString();
+           String password = aws.get("aws_password").getAsString();
+           
+           	String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+	       	String databaseUser = userName;
+	       	String databasePassword = password;
+	       	
+	   		Connection myConn = null;
+	   		PreparedStatement preparedStmt = null;
+			ResultSet myRs = null;
+			String interest = null;
+           
+           myConn = DriverManager.getConnection(url, databaseUser , databasePassword);
+   			
+   			// 2. Prepare statement
+   			preparedStmt = myConn.prepareStatement("select * from neverEatAlone.interests where user_fb_id = ? and rest_yelp_id = ?");
+   			
+   			// 3. Set the parameters
+   			preparedStmt.setString(1, request.params(":fbId"));
+   			preparedStmt.setString(2, request.params(":restYelpId"));
+   			
+   			
+   			// 4. Execute SQL query
+   			myRs = preparedStmt.executeQuery();
+   			
+   			System.out.println(myRs);
+   			
+   			Collection<String> interests = new ArrayList<String>();
+   			
+   			
+   			while (myRs.next()) {
+   				String id = myRs.getString("id");
+   				String userFbId = myRs.getString("user_fb_id");
+   				String restYelpId = myRs.getString("rest_yelp_id");
+   				
+   				interests.add(restYelpId);
+   				
+   				System.out.println(id + " " + userFbId + " " + restYelpId);
+   				
+//   				interests = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(interests)));
+   				
+   				interest = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new Interest(id, userFbId, restYelpId))));
+   				
+  
+   			}
+//   			
+//   			System.out.println("returned rest from get request: " + rest);
+//   			
+////   			System.out.println(myRs.next());
+//   			
+   			return interest;
+        	
         });
+        
+        
+        
+//        get("/users/email/:email", (request, response) -> {
+//            response.type("application/json");
+//            
+//            String url = "jdbc:mysql://localhost:3306/users";
+//        	String databaseUser = "student";
+//        	String password = "student";
+//        	
+//    		 Connection myConn = null;
+//    		 PreparedStatement preparedStmt = null;
+//     		ResultSet myRs = null;
+//            
+//            myConn = DriverManager.getConnection(url, databaseUser , password);
+//			
+//			// 2. Prepare statement
+//			preparedStmt = myConn.prepareStatement("select * from users where email = ?");
+//			
+//			// 3. Set the parameters
+//			preparedStmt.setString(1, request.params(":email"));
+//			
+//			// 4. Execute SQL query
+//			myRs = preparedStmt.executeQuery();
+//			String user = null;
+//			
+//			while (myRs.next()) {
+//				String id = myRs.getString("id");
+//				String fbId = myRs.getString("fbId");
+//				String lastName = myRs.getString("last_name");
+//				String firstName = myRs.getString("first_name");
+//				String email = myRs.getString("email");
+//				String photoUrl = myRs.getString("photoUrl");
+//				
+//				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, fbId, firstName, lastName, email, photoUrl))));
+//			}
+//			
+//			return user;
+//			
+//        });
 
         put("/users/:id", (request, response) -> {
             response.type("application/json");

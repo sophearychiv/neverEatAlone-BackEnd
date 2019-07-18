@@ -6,13 +6,17 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+	private String fbId;
+	private String photoUrl;
 
-    public User(String id, String firstName, String lastName, String email) {
+    public User(String id, String fbId, String firstName, String lastName, String email, String photoUrl) {
         super();
         this.id = id;
+        this.fbId = fbId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.photoUrl = photoUrl;
     }
 
     public String getId() {
@@ -21,6 +25,14 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public String getFbId() {
+    	return fbId;
+    }
+    
+    public void setFbId(String fbId) {
+    	this.fbId = fbId;
     }
 
     public String getFirstName() {
@@ -45,6 +57,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    
+    public String getPhotoUrl() {
+    	return photoUrl;
+    }
+    
+    public void setPhotoUrl(String photoUrl) {
+    	this.photoUrl = photoUrl;
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class UserServiceMapImpl implements UserService {
+	
     private HashMap<String, User> userMap;
 
     public UserServiceMapImpl() {

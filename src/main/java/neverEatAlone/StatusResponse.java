@@ -1,7 +1,7 @@
 package neverEatAlone;
 
 public enum StatusResponse {
-    SUCCESS("Success"), ERROR("Error");
+    SUCCESS("Success"), ERROR("Error"), NOT_FOUND("Not_Found");
 
     final private String status;
 

@@ -1,13 +1,13 @@
 package neverEatAlone;
 
-public class Interested {
+public class Interest {
 	
 		private String id;
 		private String userId;
 		private String restId;
 	    
 
-	    public Interested(String id, String userId, String restId) {
+	    public Interest(String id, String userId, String restId) {
 	        super();
 	        this.id = id;
 	        this.userId = userId;
