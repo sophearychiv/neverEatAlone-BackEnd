@@ -118,9 +118,6 @@ public class APIs {
             response.type("application/json");
             
             JsonParser parser = new JsonParser();
-//            JsonObject interested = parser.parse(request.body()).getAsJsonObject();
-//            String userId = interested.get("userId").getAsString();
-//            String restId = interested.get("restId").getAsString();
 
             
             JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
@@ -235,46 +232,7 @@ public class APIs {
    			return interest;
         	
         });
-        
-        
-        
-//        get("/users/email/:email", (request, response) -> {
-//            response.type("application/json");
-//            
-//            String url = "jdbc:mysql://localhost:3306/users";
-//        	String databaseUser = "student";
-//        	String password = "student";
-//        	
-//    		 Connection myConn = null;
-//    		 PreparedStatement preparedStmt = null;
-//     		ResultSet myRs = null;
-//            
-//            myConn = DriverManager.getConnection(url, databaseUser , password);
-//			
-//			// 2. Prepare statement
-//			preparedStmt = myConn.prepareStatement("select * from users where email = ?");
-//			
-//			// 3. Set the parameters
-//			preparedStmt.setString(1, request.params(":email"));
-//			
-//			// 4. Execute SQL query
-//			myRs = preparedStmt.executeQuery();
-//			String user = null;
-//			
-//			while (myRs.next()) {
-//				String id = myRs.getString("id");
-//				String fbId = myRs.getString("fbId");
-//				String lastName = myRs.getString("last_name");
-//				String firstName = myRs.getString("first_name");
-//				String email = myRs.getString("email");
-//				String photoUrl = myRs.getString("photoUrl");
-//				
-//				user = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new User(id, fbId, firstName, lastName, email, photoUrl))));
-//			}
-//			
-//			return user;
-//			
-//        });
+
 
         put("/users/:id", (request, response) -> {
             response.type("application/json");
