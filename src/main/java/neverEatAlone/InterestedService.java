@@ -4,13 +4,13 @@ import java.util.Collection;
 
 public interface InterestedService {
 	
-    public void addInterested(Interested interested);
+    public void addInterested(Interest interested);
 
-    public Collection<Interested> getInterested();
+    public Collection<Interest> getInterested();
 
-    public Interested getInterested(String id);
+    public Interest getInterested(String id);
 
-    public Interested editInterested(Interested interested) throws UserException;
+    public Interest editInterested(Interest interested) throws UserException;
 
     public void deleteInterested(String id);
 

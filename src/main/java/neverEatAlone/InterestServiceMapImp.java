@@ -3,35 +3,35 @@ package neverEatAlone;
 import java.util.Collection;
 import java.util.HashMap;
 
-public class InterestedServiceMapImp implements InterestedService {
-    private HashMap<String, Interested> interestedMap;
+public class InterestServiceMapImp implements InterestedService {
+    private HashMap<String, Interest> interestedMap;
 
-    public InterestedServiceMapImp() {
+    public InterestServiceMapImp() {
         interestedMap = new HashMap<>();
     }
 
     @Override
-    public void addInterested(Interested interested) {
+    public void addInterested(Interest interested) {
         interestedMap.put(interested.getId(), interested);
     }
 
     @Override
-    public Collection<Interested> getInterested() {
+    public Collection<Interest> getInterested() {
         return interestedMap.values();
     }
 
     @Override
-    public Interested getInterested(String id) {
+    public Interest getInterested(String id) {
         return interestedMap.get(id);
     }
 
     @Override
-    public Interested editInterested(Interested forEdit) throws UserException {
+    public Interest editInterested(Interest forEdit) throws UserException {
         try {
             if (forEdit.getId() == null)
                 throw new UserException("ID cannot be blank");
 
-            Interested toEdit = interestedMap.get(forEdit.getId());
+            Interest toEdit = interestedMap.get(forEdit.getId());
 
             if (toEdit == null)
                 throw new UserException("Interested not found");
