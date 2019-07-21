@@ -31,11 +31,11 @@ public class APIs {
             userService.addUser(user);
             
             JsonParser parser = new JsonParser();
-            JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
             String userName = aws.get("aws_userName").getAsString();
             String password = aws.get("aws_password").getAsString();
             
-            String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
         	String databaseUser = userName;
         	String databasePassword = password;
         	
@@ -78,11 +78,11 @@ public class APIs {
             String restYelpId = interested.get("restYelpId").getAsString();
 
             
-            JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
             String userName = aws.get("aws_userName").getAsString();
             String password = aws.get("aws_password").getAsString();
             
-            String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
         	String databaseUser = userName;
         	String databasePassword = password;
         	
@@ -108,11 +108,6 @@ public class APIs {
             
         });
 
-        get("/users", (request, response) -> {
-            response.type("application/json");
-
-            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(userService.getUsers())));
-        });
 
         get("/users/:fbId", (request, response) -> {
             response.type("application/json");
@@ -120,11 +115,11 @@ public class APIs {
             JsonParser parser = new JsonParser();
 
             
-            JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
             String userName = aws.get("aws_userName").getAsString();
             String password = aws.get("aws_password").getAsString();
             
-            String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
         	String databaseUser = userName;
         	String databasePassword = password;
         	
@@ -178,11 +173,11 @@ public class APIs {
            JsonParser parser = new JsonParser();
 
                
-           JsonObject aws = parser.parse(new FileReader("src/main/java/neverEatAlone/secrets.txt")).getAsJsonObject();
+           JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
            String userName = aws.get("aws_userName").getAsString();
            String password = aws.get("aws_password").getAsString();
            
-           	String url = "jdbc:mysql://nevereatalone.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
+           	String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
 	       	String databaseUser = userName;
 	       	String databasePassword = password;
 	       	
