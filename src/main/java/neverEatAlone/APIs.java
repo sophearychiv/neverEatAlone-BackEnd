@@ -34,19 +34,8 @@ public class APIs {
             userService.addUser(user);
             
             JsonParser parser = new JsonParser();
-            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
-            String userName = aws.get("aws_userName").getAsString();
-            String password = aws.get("aws_password").getAsString();
-            
-            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
-        	String databaseUser = userName;
-        	String databasePassword = password;
-        	
-        	 Connection myConn = null;
+            Connection myConn = connecToDatabase();
              Statement myStmt = null;
-      
-                 // 1. Get a connection to database
-                 myConn = DriverManager.getConnection(url, databaseUser, databasePassword);
       
                  // 2. Create a statement
                  myStmt = myConn.createStatement();
@@ -59,7 +48,7 @@ public class APIs {
 //                 String photoUrl = newUser.get("photoUrl").getAsString();
       
                  // 3. Execute SQL query
-                 String sql = "insert into users " + " (fb_id, first_name, last_name, email)"
+                 String sql = "insert into users " + " (user_fb_id, first_name, last_name, email)"
                 		 + " values ('" + fbId + "','" + firstName + "','" + lastName + "','" + email + "')";
 //                		 + " values ('" + user.getFbId() + "','" + user.getFirstName() + "','" + user.getLastName() + "','" + user.getEmail() + "','" + user.getPhotoUrl() + "')";
 
@@ -81,19 +70,9 @@ public class APIs {
             String restYelpId = interested.get("restYelpId").getAsString();
 
             
-            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
-            String userName = aws.get("aws_userName").getAsString();
-            String password = aws.get("aws_password").getAsString();
-            
-            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
-        	String databaseUser = userName;
-        	String databasePassword = password;
-        	
-        	 Connection myConn = null;
+            Connection myConn = connecToDatabase();
              Statement myStmt = null;
-      
-                 // 1. Get a connection to database
-                 myConn = DriverManager.getConnection(url, databaseUser, databasePassword);
+
       
                  // 2. Create a statement
                  myStmt = myConn.createStatement();
@@ -115,29 +94,16 @@ public class APIs {
         get("/users/:fbId", (request, response) -> {
             response.type("application/json");
             
-            JsonParser parser = new JsonParser();
-
-            
-            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
-            String userName = aws.get("aws_userName").getAsString();
-            String password = aws.get("aws_password").getAsString();
-            
-            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
-        	String databaseUser = userName;
-        	String databasePassword = password;
-        	
-    		Connection myConn = null;
-    		PreparedStatement preparedStmt = null;
+            Connection myConn = connecToDatabase();
+ 	   		PreparedStatement preparedStmt = null;
      		ResultSet myRs = null;
      		String user = null;
-            
-            myConn = DriverManager.getConnection(url, databaseUser , databasePassword);
+
 			
 			// 2. Prepare statement
-			preparedStmt = myConn.prepareStatement("select * from neverEatAlone.users where fb_id = ?");
+			preparedStmt = myConn.prepareStatement("select * from neverEatAlone.users where user_fb_id = ?");
 			
 			// 3. Set the parameters
-//			preparedStmt.setDouble(1, Integer.parseInt(request.params(":id")));
 			preparedStmt.setString(1, request.params(":fbId"));
 			
 			System.out.println("user fbId in get user request is " + request.params(":fbId"));
@@ -162,8 +128,7 @@ public class APIs {
 			}
 			
 			System.out.println("returned user from get request: " + user);
-			
-//			System.out.println(myRs.next());
+
 			
 			return user;
 			
@@ -173,23 +138,10 @@ public class APIs {
         	
     	   response.type("application/json");
            
-           JsonParser parser = new JsonParser();
-
-               
-           JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
-           String userName = aws.get("aws_userName").getAsString();
-           String password = aws.get("aws_password").getAsString();
-           
-           	String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
-	       	String databaseUser = userName;
-	       	String databasePassword = password;
-	       	
-	   		Connection myConn = null;
+    	   Connection myConn = connecToDatabase();
 	   		PreparedStatement preparedStmt = null;
 			ResultSet myRs = null;
 			String interest = null;
-           
-           myConn = DriverManager.getConnection(url, databaseUser , databasePassword);
    			
    			// 2. Prepare statement
    			preparedStmt = myConn.prepareStatement("select * from neverEatAlone.interests where user_fb_id = ? and rest_yelp_id = ?");
@@ -215,18 +167,13 @@ public class APIs {
    				interests.add(restYelpId);
    				
    				System.out.println(id + " " + userFbId + " " + restYelpId);
-   				
-//   				interests = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(interests)));
+
    				
    				interest = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(new Interest(id, userFbId, restYelpId))));
    				
   
    			}
-//   			
-//   			System.out.println("returned rest from get request: " + rest);
-//   			
-////   			System.out.println(myRs.next());
-//   			
+ 			
    			return interest;
         	
         });
@@ -234,32 +181,19 @@ public class APIs {
         get("/users/:fbId/interests", (request, response) -> {
         	
      	   response.type("application/json");
-            
-            JsonParser parser = new JsonParser();
 
-                
-            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
-            String userName = aws.get("aws_userName").getAsString();
-            String password = aws.get("aws_password").getAsString();
-            
-            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
- 	       	String databaseUser = userName;
- 	       	String databasePassword = password;
- 	       	
- 	   		Connection myConn = null;
+     	  Connection myConn = connecToDatabase();
+	   		
  	   		PreparedStatement preparedStmt = null;
  			ResultSet myRs = null;
  			String interest = null;
-            
-            myConn = DriverManager.getConnection(url, databaseUser , databasePassword);
+
     			
     			// 2. Prepare statement
     			preparedStmt = myConn.prepareStatement("select * from neverEatAlone.interests where user_fb_id = ?");
     			
     			// 3. Set the parameters
     			preparedStmt.setString(1, request.params(":fbId"));
-//    			preparedStmt.setString(2, request.params(":restYelpId"));
-    			
     			
     			// 4. Execute SQL query
     			myRs = preparedStmt.executeQuery();
@@ -277,8 +211,7 @@ public class APIs {
     				interests.add(restYelpId);
     				
     				System.out.println(id + " " + userFbId + " " + restYelpId);
-    				
-//    				interests = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(interests)));
+
     				
     				interest = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(interests)));
     				
@@ -291,22 +224,10 @@ public class APIs {
         
         delete("/users/:fbId/interests/:restYelpId", (request, response) -> {
         	response.type("application/json");
-        	
-//        	JsonParser parser = new JsonParser();
-
-            
-//            JsonObject aws = parser.parse(new FileReader(".secrets.txt")).getAsJsonObject();
-//            String userName = aws.get("aws_userName").getAsString();
-//            String password = aws.get("aws_password").getAsString();
-//            
-//            String url = "jdbc:mysql://database-2.ctvdfnzijgid.us-west-2.rds.amazonaws.com:3306/neverEatAlone";
-// 	       	String databaseUser = userName;
-// 	       	String databasePassword = password;
+       
  	       	
  	   		Connection myConn = connecToDatabase();
  	   		PreparedStatement preparedStmt = null;
-//            
-//            myConn = DriverManager.getConnection(url, databaseUser , databasePassword);
     			
     		// 2. Prepare statement
     		preparedStmt = myConn.prepareStatement("delete from interests where user_fb_id = ? and rest_yelp_id = ? ");
