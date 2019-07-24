@@ -180,3 +180,34 @@ org.osgi.framework.BundleException: Could not resolve module: org.eclipse.mylyn.
 !MESSAGE Unexpected error while loading repository template extensions
 !SUBENTRY 1 org.eclipse.mylyn.tasks.core 4 0 2019-07-11 19:28:24.727
 !MESSAGE Could not load repository template extension contributed by 'org.eclipse.mylyn.bugzilla.ide' with connectorKind 'bugzilla'
+!SESSION 2019-07-20 11:23:36.243 -----------------------------------------------
+eclipse.buildId=4.12.0.I20190605-1800
+java.version=12.0.1
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.java.product -product org.eclipse.epp.package.java.product -keyring /Users/sophearychiv/.eclipse_keyring
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.epp.package.java.product -data /Users/sophearychiv/eclipse-workspace/neverEatAlone-BackEnd -product org.eclipse.epp.package.java.product -keyring /Users/sophearychiv/.eclipse_keyring
+
+!ENTRY org.eclipse.core.net 1 0 2019-07-20 11:23:38.815
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY org.eclipse.egit.core 1 0 2019-07-20 11:23:38.843
+!MESSAGE Using Apache MINA sshd as ssh client.
+
+!ENTRY com.amazonaws.eclipse.core 1 0 2019-07-20 11:23:42.909
+!MESSAGE Starting the AWS toolkit core plugin...
+
+!ENTRY com.amazonaws.eclipse.core 1 0 2019-07-20 11:23:45.007
+!MESSAGE No profile found: default
+
+!ENTRY com.amazonaws.eclipse.core 1 0 2019-07-20 11:23:45.023
+!MESSAGE Monitoring content of /Users/sophearychiv/.aws/credentials
+
+!ENTRY com.amazonaws.eclipse.core 1 0 2019-07-20 11:23:45.338
+!MESSAGE AWS toolkit core plugin initialized after 2432 milliseconds.
+
+!ENTRY com.amazonaws.eclipse.core 1 0 2019-07-20 11:23:45.344
+!MESSAGE The current accountId is not found in the system. Switching to the default account.
+
+!ENTRY com.amazonaws.eclipse.core 1 0 2019-07-20 11:23:45.814
+!MESSAGE Initialized a new Cognito identity us-east-1:a2dcef34-ca4d-446b-b095-87832ea6a57b
