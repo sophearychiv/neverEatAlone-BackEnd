@@ -6,6 +6,7 @@ import static spark.Spark.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.*;
@@ -111,6 +112,8 @@ public class Main {
             String mealStartDateTimeString = invite.get("mealStartDateTime").getAsString();
             String mealEndDateTimeString = invite.get("mealEndDateTime").getAsString();
             
+            System.out.println("executed here");
+            
 //            SimpleDateFormat dateFormatter=new SimpleDateFormat("EEE MMM yyyy, HH:mm:ss"); 
             SimpleDateFormat dateFormatter=new SimpleDateFormat("MM/dd/yyyy, HH:mm:ss a"); 
             Date javaCreationDateTime = dateFormatter.parse(creationDateTimeString);
@@ -181,6 +184,61 @@ public class Main {
 
             return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
             
+        });
+        
+        get("users/:fbId/invites", (request, response) -> {
+        	Connection myConn = connecToDatabase();
+ 	   		PreparedStatement preparedStmt = null;
+     		ResultSet myRs = null;
+     		
+     		preparedStmt = myConn.prepareStatement("select * from invites inner join invites_users on invites.id = invites_users.invite_id where requester_fb_id = ? ");
+     		
+     		preparedStmt.setString(1, request.params(":fbId"));
+     		myRs = preparedStmt.executeQuery();
+     		
+     		Collection<Invite> invites = new ArrayList<Invite>();
+     		 
+     		
+     		while (myRs.next()) {
+     			
+     			String inviteId = myRs.getString("invite_id");
+				String requesterFbId = myRs.getString("requester_fb_id");
+				String receipientFbId = myRs.getString("receipient_fb_id");
+				String restYelpId = myRs.getString("rest_yelp_id");
+				String creationDate = myRs.getString("creation_date");
+				String mealStartDate = myRs.getString("meal_start_date");
+				String mealEndDate = myRs.getString("meal_end_date");
+				
+//				HashMap<String, Invite> inviteMap = new HashMap<String, Invite>();
+				
+				Invite invite = new Invite(inviteId, requesterFbId, receipientFbId, restYelpId, creationDate, mealStartDate, mealEndDate);
+				
+//				inviteMap.put(invite.getInviteId(), invite);
+				
+				
+//				invite.put("inviteId", inviteId);
+//				invite.put("requesterFbId", requesterFbId);
+//				invite.put("receipientFbId", receipientFbId);
+//				invite.put("creationDate", creationDate);
+//				invite.put("restYelpId", restYelpId);
+//				invite.put("mealStartDate", mealStartDate);
+//				invite.put("mealEndDate", mealEndDate);
+				
+				invites.add(invite);
+				
+				
+				
+				
+//				invite = new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, 
+//						new Gson().toJsonTree(new Invite (inviteId, requesterFbId, receipientFbId, restYelpId, creationDate, mealStartDate, mealEndDate))));
+				
+				
+				
+			}
+     		
+//     		System.out.println(invites);
+     		return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS,new Gson().toJsonTree(invites)));
+     		
         });
 
 
